@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import connectDB from './Data_Base/dbconnect.js';
 import router from './Routes/route.js';
+import messageRouter from './Routes/messageRoute.js'
 connectDB();
 
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // route
 app.use('/', router);
+app.use('/message', messageRouter);
 
 
 
