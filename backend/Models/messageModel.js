@@ -12,13 +12,13 @@ const messageSchema=mongoose.Schema({
         required:true
     },
     message:{
-        type: Sting,
+        type: String,
         required:true
     },
     conversationId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Conversation",
-        default:[]
+        required:true
     },
 },{timestamps:true});
 

@@ -1,10 +1,10 @@
 import User from "../Models/userModel.js";
 import jwt from "jsonwebtoken";
 
-const isLogin=(req, res, next)=>{
+const isLogin= async (req, res, next)=>{
     try {
         const token=req.cookies.jwt;
-        console.log(token);
+        // console.log(token);
         if(!token)
         {
             return res.status(500).send({
@@ -21,7 +21,7 @@ const isLogin=(req, res, next)=>{
                 message:"User unauthorize - Invalid Token"
             })
         }
-        const user=User.findById(decode.userId).select("password");
+        const user=await User.findById(decode.userId).select("password");
         if(!user)
         {
              return res.status(500).send({

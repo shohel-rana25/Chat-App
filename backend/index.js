@@ -5,25 +5,25 @@ dotenv.config();
 import connectDB from './Data_Base/dbconnect.js';
 import router from './Routes/route.js';
 import messageRouter from './Routes/messageRoute.js'
+import cookieParser from 'cookie-parser';
 connectDB();
 
 
 
 // middleware
 app.use(express.json());
+app.use(cookieParser());
 
 
 
 // route
-app.use('/', router);
+app.use('/user', router);
 app.use('/message', messageRouter);
 
 
 
-
-
 app.get('/', (req, res)=>{
-    res.send('chat app ')
+    res.send('chat aplication ')
 })
 
 const PORT=process.env.PORT || 2000;

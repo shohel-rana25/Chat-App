@@ -8,7 +8,7 @@ participants:[{
 }],
 messages:[{
      type: mongoose.Schema.Types.ObjectId,
-     ref:"message",
+     ref:"Message",
      default:[]
 }],
 }, {timestamps:true});
