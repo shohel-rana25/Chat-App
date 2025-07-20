@@ -2,41 +2,49 @@ import User from "../Models/userModel.js"
 import bcrypt from 'bcrypt';
 import jwtToken from "../utils/jwtwebToken.js";
 
-export const registerUser=async(req, res)=>{
-    try {
-        const {username, fullname ,gender,email, password,profilePhoto}=req.body;
-        
-        //if user already exit
-        const existuser=await User.findOne({email});
-        if(existuser)return res.status(400).json({
-            message:"User already exists"
-        })
+export const registerUser = async (req, res) => {
+  try {
+    console.log("req.body:", req.body);
+    console.log("req.file:", req.file);
 
-        const profileBoy = profilePhoto || `https://avatar.iran.liara.run/public/boy?username=${username}`;
-        const profileGirl = profilePhoto || `https://avatar.iran.liara.run/public/girl?username=${username}`;
+    const { username, fullname, gender, email, password } = req.body;
+    const profilePhoto = req.file ? req.file.filename : "";
 
-
-        // hash password
-        const hashpassword=await bcrypt.hash(password, 10);
-        // save user
-        const newUser=new User({ 
-            username, 
-            fullname ,
-            gender,
-            email, 
-            password:hashpassword,
-            profilePhoto:gender=="male"?profileBoy : profileGirl
-        })
-
-        await newUser.save();
-        jwtToken(newUser._id,res);
-        return res.status(200).json({
-            message : "User registered successfully"
-        })
-    }catch (error) {
-        console.log(error);
-        res.status(500).json({message : error.message});
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
+
+    const existuser = await User.findOne({ email });
+    if (existuser)
+      return res.status(400).json({
+        message: "User already exists",
+      });
+
+    const profileBoy = profilePhoto || `https://avatar.iran.liara.run/public/boy?username=${username}`;
+    const profileGirl = profilePhoto || `https://avatar.iran.liara.run/public/girl?username=${username}`;
+
+    const hashpassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      fullname,
+      gender,
+      email,
+      password: hashpassword,
+      profilePhoto: gender == "male" ? profileBoy : profileGirl,
+    });
+
+    await newUser.save();
+    jwtToken(newUser._id, res);
+
+    return res.status(200).json({
+      message: "User registered successfully",
+      redirect : '/user/login',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const loginUser=async (req, res)=>{

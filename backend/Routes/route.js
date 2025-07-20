@@ -1,12 +1,24 @@
-import express from 'express'
-import { getmethod, loginUser, logoutUser, registerUser } from '../Controllers/authController.js'
-const router=express.Router();
+import express from 'express';
+import multer from 'multer';
+import { getmethod, loginUser, logoutUser, registerUser } from '../Controllers/authController.js';
 
+const router = express.Router();
 
-router.post('/register', registerUser)
-router.post('/login', loginUser)
-router.post('/logout', logoutUser)
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
+
+router.post('/register', upload.single('profilePhoto'), registerUser);
+
+router.post('/login', loginUser);
+router.post('/logout', logoutUser);
 router.get('/', getmethod);
 
 export default router;
-
